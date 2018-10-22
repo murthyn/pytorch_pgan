@@ -1,3 +1,5 @@
+# Source: https://github.com/tkarras/progressive_growing_of_gans/
+
 import numpy as np
 
 import torch.nn as nn
@@ -48,11 +50,26 @@ class Generator(nn.Module):
 
         super(Generator, self).__init__()
 
+        self.resolution_log2 = int(np.log2(resolution))
+        assert resolution == 2 ** self.resolution_log2 and resolution >= 4
+
+        def nf(stage): return min(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_max)
+        def PN(x): return pixel_norm(x, epsilon=pixelnorm_epsilon) if use_pixelnorm else x
+
+        if latent_size is None: latent_size = nf(0)
+        if structure is None: structure = 'linear' if is_template_graph else 'recursive'
+        act = nn.leakyReLU if use_leakyrelu else nn.ReLU
+
         self.num_channels = num_channels
         self.img_size = 0
         self.img_shape = (self.num_channels, self.img_size, self.img_size)
 
-        # TODO: define block
+        def block(x, res):
+            if res == 2:  # 4x4
+                return
+            else:  # 8x8 and up
+                return
+            # TODO: define block
 
         self.model = None # TODO:
 
