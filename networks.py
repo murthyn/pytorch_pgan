@@ -25,7 +25,22 @@ def pixel_norm(x, epsilon=1e-8):
     return x * torch.rsqrt(torch.mean(torch.pow(x, 2), dim=1, keepdim=True) + epsilon)
 
 #----------------------------------------------------------------------------
+# Fully-connected layer.
 
+class Dense(nn.Module):
+    def __init__(self, gain=np.sqrt(2), use_wscale=False):
+        self.gain = gain
+        self.use_wscale = use_wscale
+
+
+    (x, fmaps, gain=np.sqrt(2), use_wscale=False):
+    if len(x.shape) > 2:
+        x = tf.reshape(x, [-1, np.prod([d.value for d in x.shape[1:]])])
+    w = get_weight([x.shape[1].value, fmaps], gain=gain, use_wscale=use_wscale)
+    w = tf.cast(w, x.dtype)
+    return tf.matmul(x, w)
+
+#----------------------------------------------------------------------------
 # Generator from paper
 
 class Generator(nn.Module):
